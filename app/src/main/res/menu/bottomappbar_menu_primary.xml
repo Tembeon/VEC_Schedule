@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/btn_calendar"
+        android:icon="@drawable/ic_calendar"
+        android:title="@string/action_search"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/btn_times"
+        android:icon="@drawable/ic_time"
+        android:title="@string/action_time"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/btn_share"
+        android:icon="@drawable/ic_share"
+        android:title="@string/action_share"
+        app:showAsAction="ifRoom"/>
+</menu>

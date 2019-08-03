@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group android:checkableBehavior="none">
+        <item
+        android:id="@+id/nav1"
+        android:icon="@drawable/ic_vk"
+        android:title="@string/bottom_sheet_vk" />
+
+        <item
+            android:id="@+id/app_bar_switch"
+            android:title="@string/check_background"
+            app:actionLayout="@layout/switch_item"
+            android:icon="@drawable/ic_settings"
+            app:showAsAction="always" />
+
+    </group>
+</menu>

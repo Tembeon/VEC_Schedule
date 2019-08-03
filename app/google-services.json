@@ -1,0 +1,99 @@
+{
+  "project_info": {
+    "project_number": "952624281069",
+    "firebase_url": "https://tem-apps.firebaseio.com",
+    "project_id": "tem-apps",
+    "storage_bucket": "tem-apps.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:952624281069:android:a8be0d63d4b33aa6",
+        "android_client_info": {
+          "package_name": "tem.apps.lessonschedule"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "952624281069-e3d72au28akqf7o2hdc28klt247cna2k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDyj1rIdteB3Xe71CVZ87_KIN7fGg-tF2c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "952624281069-e3d72au28akqf7o2hdc28klt247cna2k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:952624281069:android:3c70b592b7f81dc3",
+        "android_client_info": {
+          "package_name": "tem.apps.vec_schedule"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "952624281069-e3d72au28akqf7o2hdc28klt247cna2k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDyj1rIdteB3Xe71CVZ87_KIN7fGg-tF2c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "952624281069-e3d72au28akqf7o2hdc28klt247cna2k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:952624281069:android:5251f2b36219c44d",
+        "android_client_info": {
+          "package_name": "tem.apps.vecschedule"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "952624281069-e3d72au28akqf7o2hdc28klt247cna2k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDyj1rIdteB3Xe71CVZ87_KIN7fGg-tF2c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "952624281069-e3d72au28akqf7o2hdc28klt247cna2k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      },
+      "admob_app_id": "ca-app-pub-7414756560875637~1729449990"
+    }
+  ],
+  "configuration_version": "1"
+}

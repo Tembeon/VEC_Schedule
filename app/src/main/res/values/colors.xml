@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#000000</color>
+    <color name="colorPrimaryDark">#121212</color>
+    <color name="colorAccent">#000000</color>
+    <color name="colorSnackbarButton">#ef7f3e</color>
+    <color name="red">#c41411</color>
+    <color name="default_fab">#424242</color>
+    <color name="colorDrawerIcons">#686868</color>
+    <color name="colorDrawerIconsChecked">#82acf7</color>
+    <color name="fab_color">#424242</color>
+    <color name="colorDrawerBackground">#303030</color>
+    <color name="colorDrawerBackgroundChecked">#2d76f9</color>
+
+</resources>

@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">ВЭК Расписание</string>
+    <string name="action_search">Search</string>
+    <string name="action_settings">Настройки</string>
+    <string name="toggle_fab_string">Кнопка</string>
+    <string name="time_item1">0. 7:30 – 8:20</string>
+    <string name="time_item2">1. 8:30 – 10:00</string>
+    <string name="time_item3">2. 10:10 – 11:40</string>
+    <string name="time_item4">3. 10:10 – 11:40</string>
+    <string name="time_item5">4. 14:10 – 15:40</string>
+    <string name="time_item6">5. 15:50 – 17:20</string>
+    <string name="action_share">Поделиться расписанием</string>
+    <string name="bottom_sheet_vec">ВЭК Расписание</string>
+    <string name="bottom_sheet_vk">Группа ВК</string>
+    <string name="action_time">Просмотреть звонки</string>
+    <string name="bottom_sheet_header">Расписание звонков</string>
+    <string name="bottom_sheet_text">Для полного дня</string>
+    <string name="dumm_text">Привет мир!</string>
+    <string name="dumm_text_2">Привет мир! (2)</string>
+    <string name="title_activity_settings">Настройки</string>
+    <string name="main_loading">Загрузка…</string>
+    <string name="main_loading_error">Ошибка загрузки</string>
+    <string name="main_loading_not_found">Расписание не найдено</string>
+    <string name="check_background">Проверять расписание в фоне</string>
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+
+</resources>
