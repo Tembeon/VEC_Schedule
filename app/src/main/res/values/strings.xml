@@ -6,12 +6,13 @@
     <string name="time_item1">0. 7:30 – 8:20</string>
     <string name="time_item2">1. 8:30 – 10:00</string>
     <string name="time_item3">2. 10:10 – 11:40</string>
-    <string name="time_item4">3. 10:10 – 11:40</string>
+    <string name="time_item4">3. 12:30 – 14:00</string>
     <string name="time_item5">4. 14:10 – 15:40</string>
     <string name="time_item6">5. 15:50 – 17:20</string>
     <string name="action_share">Поделиться расписанием</string>
     <string name="bottom_sheet_vec">ВЭК Расписание</string>
     <string name="bottom_sheet_vk">Группа ВК</string>
+    <string name="bottom_sheet_telegram">Канал Telegram</string>
     <string name="action_time">Просмотреть звонки</string>
     <string name="bottom_sheet_header">Расписание звонков</string>
     <string name="bottom_sheet_text">Для полного дня</string>

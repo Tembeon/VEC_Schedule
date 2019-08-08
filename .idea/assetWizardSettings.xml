@@ -67,8 +67,8 @@
                                   <option name="values">
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
-                                      <entry key="imageAsset" value="C:\Users\PC\Desktop\Project_VEC\round_clear_white_36dp.png" />
-                                      <entry key="outputName" value="ic_error_white" />
+                                      <entry key="imageAsset" value="C:\Users\PC\Downloads\Telegram Desktop\Alert.png" />
+                                      <entry key="outputName" value="ic_notifcation_alert" />
                                       <entry key="theme" value="HOLO_DARK" />
                                       <entry key="themeColor" value="ffffff" />
                                     </map>

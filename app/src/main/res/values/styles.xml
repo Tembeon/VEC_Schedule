@@ -15,6 +15,8 @@
         <item name="listPreferredItemHeightSmall">55dp</item><!-- item size in menu-->
     </style>
 
+
+
     <style name="MyAppTheme" parent="Theme.AppCompat.Light">
         <item name="colorPrimary">#303030</item>
         <item name="android:textColorPrimary">#000</item>

@@ -1,28 +1,35 @@
 package com.example.vec_schedule
 
 import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import com.chibatching.kotpref.KotprefModel
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.internal.NavigationMenuView
 import com.google.android.material.navigation.NavigationView
-import android.widget.FrameLayout
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.fragment_bottom_navigation_drawer_settings.*
 import org.jetbrains.anko.support.v4.browse
-import org.jetbrains.anko.support.v4.intentFor
-import org.jetbrains.anko.support.v4.toast
-import tem.apps.vec_schedule.SettingsActivity
 
 
-public class mainkt {
+class InjectableContextSamplePref(context: Context) : KotprefModel(context) {
+    object Settings : KotprefModel() {
+        var check_off: String by stringPref("false")
+        var last_checked_day: String by stringPref("1.1.2000")
+    }
 
+    var sampleData by stringPref()
+    //SharedPreferences
 
 }
 
 class BottomNavigationDrawerFragmentSettings: BottomSheetDialogFragment() {
+
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_bottom_navigation_drawer_settings, container, false)
@@ -35,15 +42,29 @@ class BottomNavigationDrawerFragmentSettings: BottomSheetDialogFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        //Make switch checked when option is active
+        if (InjectableContextSamplePref.Settings.check_off == "true") {
+            switch_background_check!!.isChecked = true
+        }
 
+        switch_background_check.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked){
+                //Enable background check
+                InjectableContextSamplePref.Settings.check_off = "true"
+            } else {
+                //Disable background check
+                InjectableContextSamplePref.Settings.check_off = "false"
+
+            }
+        }
 
 
         navigation_view.setNavigationItemSelectedListener { menuItem ->
             // Bottom Navigation Drawer menu item clicks
             when (menuItem.itemId) {
                 R.id.nav1 -> browse("https://vk.com/temapps")
-               
-                R.id.app_bar_switch -> toast("Nothing here")
+                R.id.nav2 -> browse("https://t.me/tem_apps")
+
 
             }
 

@@ -13,7 +13,7 @@
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
         android:fontFamily="@font/google_sans"
@@ -22,8 +22,9 @@
         android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textSize="24sp"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="84dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:id="@+id/view2"
@@ -36,6 +37,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
+    <Switch
+        android:id="@+id/switch_background_check"
+        style="@style/Preference.SwitchPreferenceCompat"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="22dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="10dp"
+        android:button="@drawable/ic_update_round"
+        android:paddingLeft="13dp"
+        android:switchTextAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+        android:text="@string/check_background"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+        android:textColor="#FFF"
+        android:textSize="14.5sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view2" />
+
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigation_view"
         android:layout_width="match_parent"
@@ -43,14 +64,18 @@
         android:layout_gravity="bottom"
         android:background="@color/colorDrawerBackground"
         android:paddingBottom="0dp"
+        android:paddingTop="0dp"
+        android:layout_marginTop="5dp"
         app:itemIconTint="#FFF"
         app:itemTextColor="#FFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view2"
+        app:layout_constraintTop_toBottomOf="@+id/switch_background_check"
         app:menu="@menu/bottom_nav_drawer_menu"
-        app:theme="@style/NavigationDrawerStyle" />
+        app:theme="@style/NavigationDrawerStyle">
+
+    </com.google.android.material.navigation.NavigationView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
