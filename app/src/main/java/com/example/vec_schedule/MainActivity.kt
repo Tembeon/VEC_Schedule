@@ -16,6 +16,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.DatePicker
@@ -42,6 +43,8 @@ import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
+import kotlinx.android.synthetic.main.activity_main.*
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -244,7 +247,9 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
         getData()
         //DON'T FORGET ABOUT CANCEL SCHEDULE NOTIFICATION
-        stopService(intent)
+        if (Settings.check_off == "true") {
+            stopService(intent)
+        }
     }
 
     override fun onStop() {
@@ -387,6 +392,7 @@ class MainActivity : AppCompatActivity() {
                     fab.setImageResource(ic_arrow_left_white)
                     textView.text = "Загрузка..."
                     web1.loadUrl(schedule_url_tomorrow)
+
 
                 } else {
                     fab.setImageResource(ic_arrow_right_white)
@@ -538,6 +544,7 @@ class DownloadAndSaveImageTask(context: Context) : AsyncTask<String, Unit, Unit>
 
 
 class CheckService : Service() {
+
     var schedule_url_tomorrow = "https://"
     var answer = "https://"
     var answer_tomorrow = "https://"
@@ -547,10 +554,18 @@ class CheckService : Service() {
     var year = "2000"
     var today_str = ""
     var schedule_url_data = "01.01.2000"
-
-
     private val TAG = "CheckService"
-    var web_check: WebView? = null
+
+
+    private val web_off_check: WebView? = null
+
+
+
+
+
+
+
+
 
 
 
@@ -566,33 +581,26 @@ class CheckService : Service() {
 
         Log.i(TAG, "Service onStartCommand $startId")
 
-        val timer = Timer()
-
-        val task = object : TimerTask() {
-            override fun run() {
-                getData()
-                web_check?.loadUrl(schedule_url_tomorrow)
-
-            }
-        }
-        timer.schedule(task, 0, 60000)
-
-
         //WebView for background check
-        web_check?.webViewClient = object : WebViewClient() {
+
+        web_off_check?.webViewClient = object : WebViewClient() {
+
+
             override fun onPageFinished(view: WebView, url: String) {
                 super.onPageFinished(view, url)
-                if (web_check?.title!!.contains((answer))) {
+                makeShortNotification("onPageFinished", "start action", 11, false)
+
+                if (web_off_check?.title!!.contains((answer))) {
                     //nothing to do. Just founded schedule for today
                 } else {
-                    if (web_check?.title!!.contains(answer_tomorrow_check)) {
-                        if (MainActivity.Settings.last_checked_day !== answer_tomorrow_check) {
-                            makeShortNotification("Найдено расписание", "Нажмите, чтобы открыть приложение", 1, false)
-                            stopService(intent)
-                            MainActivity.Settings.last_checked_day = answer_tomorrow_check
-                        }
+                    if (web_off_check?.title!!.contains(answer_tomorrow_check)) {
+
+                        makeShortNotification("Найдено расписание", "Нажмите, чтобы открыть приложение", 1, false)
+                        makeShortNotification(MainActivity.Settings.last_checked_day, answer_tomorrow_check, 10, false)
+                        MainActivity.Settings.last_checked_day = answer_tomorrow_check
+
                     } else {
-                        if (web_check?.title!!.contains(schedule_url_data)) {
+                        if (web_off_check?.title!!.contains(schedule_url_data)) {
                             //nothing to do. Just founded schedule by calendar data
                         } else {
                             // "Расписание не найдено"
@@ -602,7 +610,24 @@ class CheckService : Service() {
             }
 
 
+
+
         }
+
+        val timer = Timer()
+
+        val task = object : TimerTask() {
+            override fun run() {
+                getData()
+                web_off_check?.loadUrl(schedule_url_tomorrow)
+
+
+            }
+        }
+        timer.schedule(task, 0, 60000)
+
+
+
 
 
         return START_STICKY
