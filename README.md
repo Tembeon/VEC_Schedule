@@ -9,7 +9,7 @@
 ### Скриншоты
 
 <p align="center">
-  <img src="https://tem-apps.web.app/vec_schedule/assets/vec_schedule/scr_main_no_schedule.png" width="350" height="750" alt="MainScreen">
-  <img src="https://tem-apps.web.app/vec_schedule/assets/vec_schedule/scr_main_menu.png" width="350" height="750" alt="MainScreen">
-  <img src="https://tem-apps.web.app/vec_schedule/assets/vec_schedule/scr_main_pause_time.png" width="350" height="750" alt="MainScreen">
+  <img src="https://tem-apps.web.app/vec_schedule/assets/screenshots/vec_main.png"  alt="MainScreen">
+  <img src="https://tem-apps.web.app/vec_schedule/assets/screenshots/vec_menu.png"  alt="MainScreen">
+  <img src="https://tem-apps.web.app/vec_schedule/assets/screenshots/vec_time.png" " alt="MainScreen">
 </p>
