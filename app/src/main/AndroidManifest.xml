@@ -36,9 +36,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".CheckService"
-            android:enabled="true"
-            android:exported="true"/>
+
     </application>
 
 </manifest>

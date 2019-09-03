@@ -14,6 +14,7 @@ import com.google.android.material.internal.NavigationMenuView
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.fragment_bottom_navigation_drawer_settings.*
 import org.jetbrains.anko.support.v4.browse
+import org.jetbrains.anko.support.v4.share
 
 
 class InjectableContextSamplePref(context: Context) : KotprefModel(context) {
@@ -64,7 +65,11 @@ class BottomNavigationDrawerFragmentSettings: BottomSheetDialogFragment() {
             when (menuItem.itemId) {
                 R.id.nav1 -> browse("https://vk.com/temapps")
                 R.id.nav2 -> browse("https://t.me/tem_apps")
-
+                R.id.nav3 -> share("ВЭК Расписание - приложение для просмотра расписания пар" +
+                        " для ВЭКа с возможностью отслеживания выхода расписаний и получения" +
+                        " уведомления, если расписание найдено." +
+                        "\n\nПодробнее:\nhttps://tem-apps.web.app/vec_schedule.html" +
+                        "\n\nСкачать приложение:\nhttps://tem-apps.web.app/vec_schedule/latest.html")
 
             }
 

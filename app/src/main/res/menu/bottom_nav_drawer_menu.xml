@@ -12,5 +12,10 @@
             android:icon="@drawable/ic_telegram_white_bold"
             android:title="@string/bottom_sheet_telegram" />
 
+        <item
+            android:id="@+id/nav3"
+            android:icon="@drawable/ic_share"
+            android:title="@string/bottom_sheet_share" />
+
     </group>
 </menu>

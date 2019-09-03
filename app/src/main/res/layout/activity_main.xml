@@ -16,9 +16,9 @@
         android:visibility="gone" />
 
     <WebView
-        android:id="@+id/web_off_check"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:id="@+id/web_check"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:overScrollMode="ifContentScrolls"
         android:visibility="gone" />
 
@@ -37,6 +37,22 @@
         android:textSize="18sp"
         android:visibility="visible"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/text_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="18dp"
+        android:fontFamily="@font/google_sans"
+        android:gravity="center"
+        android:text=""
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:visibility="visible"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
 
 
 
@@ -62,12 +78,11 @@
         app:borderWidth="0dp"
         app:backgroundTint="@color/fab_color"/>
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="0dp"
-        android:layout_height="0dp" />
+
 
 
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+

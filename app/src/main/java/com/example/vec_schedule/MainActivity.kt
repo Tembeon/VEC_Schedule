@@ -3,9 +3,10 @@ package com.example.vec_schedule
 import android.Manifest
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
+import android.annotation.TargetApi
 import android.app.*
-import android.content.Context
-import android.content.Intent
+import android.content.*
+import android.content.ClipData.newPlainText
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
@@ -13,17 +14,18 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.*
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.webkit.WebChromeClient
+import android.view.*
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.DatePicker
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.setMargins
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target.SIZE_ORIGINAL
@@ -32,10 +34,17 @@ import com.chibatching.kotpref.KotprefModel
 import com.example.vec_schedule.R.drawable.*
 import com.example.vec_schedule.R.menu.bottomappbar_menu_primary
 import com.example.vec_schedule.R.menu.bottomappbar_menu_secondary
+import com.google.android.gms.internal.measurement.zzz
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.textView
+import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.android.synthetic.main.fragment_bottom_navigation_drawer.*
 import org.jetbrains.anko.*
+import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt
 import java.io.File
 import java.io.FileOutputStream
 import java.lang.ref.WeakReference
@@ -43,7 +52,6 @@ import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
-import kotlinx.android.synthetic.main.activity_main.*
 
 
 
@@ -51,6 +59,7 @@ class MainActivity : AppCompatActivity() {
     object Settings : KotprefModel() {
         var check_off: String by stringPref("false")
         var last_checked_day: String by stringPref("1.1.2000")
+        var first_join : String by stringPref("")
     }
 
 
@@ -72,6 +81,8 @@ class MainActivity : AppCompatActivity() {
     var is_schedule = false
     var is_fab_red = false
     var hard_visible = false
+    var hour = "0"
+    var fab_status = 0
 
     //SharedPreferences variables
 
@@ -139,6 +150,7 @@ class MainActivity : AppCompatActivity() {
                     .setContentText(body)
                     .setColor(Color.parseColor("#123676"))
                     .setOngoing(is_ongoing)
+                    .setContentIntent(resultPendingIntent)
                     .setAutoCancel(true)
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                     .build()
@@ -148,6 +160,103 @@ class MainActivity : AppCompatActivity() {
         return null
     }
 
+    private fun makeLongNotification(title: String, body: String, Id : Int, is_ongoing: Boolean): Notification.Builder? {
+        val resultIntent =  Intent(this, MainActivity::class.java)
+        val resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            //create channel
+
+            val mNotificationManager: NotificationManager by lazy {
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            }
+
+            // Create the channel object with the unique ID FOLLOWERS_CHANNEL
+            val followersChannel = NotificationChannel(
+                    "tem.apps.vec_schedule.check",
+                    "Основные уведомления",
+                    NotificationManager.IMPORTANCE_MIN)
+            // Configure the channel's initial settings
+            followersChannel.lightColor = Color.GREEN
+            followersChannel.vibrationPattern = longArrayOf(100, 200, 300, 400, 500, 400, 500, 200, 500)
+            // Submit the notification channel object to the notification manager
+            mNotificationManager.createNotificationChannel(followersChannel)
+
+            //create notification
+            val notification = Notification.Builder(applicationContext, "tem.apps.vec_schedule.check")
+                    .setContentTitle(title)
+                    .setContentText(body)
+                    .setColor(Color.parseColor("#123676"))
+                    .setSmallIcon(ic_notifcation_silent)
+                    .setAutoCancel(false)
+                    .setContentIntent(resultPendingIntent)
+                    .setOngoing(is_ongoing)
+
+
+            val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.notify(Id, notification.build())
+        } else {
+            //for Android 7-
+
+
+            val notification = NotificationCompat.Builder(this)
+                    .setSmallIcon(ic_notifcation_silent)
+                    .setContentTitle(title)
+                    .setContentText(body)
+                    .setContentIntent(resultPendingIntent)
+                    .setAutoCancel(false)
+                    .setColor(Color.parseColor("#123676"))
+                    .setOngoing(is_ongoing)
+                    .setPriority(NotificationCompat.PRIORITY_MIN)
+                    .build()
+            (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).notify(Id, notification)
+
+        }
+        return null
+    }
+
+    private fun applicationTutorial(){
+        var mFabPrompt: MaterialTapTargetPrompt? = null
+        mFabPrompt = MaterialTapTargetPrompt.Builder(this)
+                .setTarget(findViewById<View>(R.id.fab))
+                .setPrimaryText("Просмотр расписания на завтра")
+                .setSecondaryText("Нажми, чтобы посмотреть расписание на завтра. Нажми ещё раз, чтобы вернуть расписание на сегодня")
+                .setAnimationInterpolator(FastOutSlowInInterpolator())
+                .setPromptStateChangeListener { prompt, state ->
+                    if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED || state == MaterialTapTargetPrompt.STATE_DISMISSING) {
+                        mFabPrompt = MaterialTapTargetPrompt.Builder(this)
+                                .setTarget(text_placeholder)
+                                .setPrimaryText("Здесь показывается расписание")
+                                .setSecondaryText("Небольшая информация: после 5 часов вечера здесь показывается расписание на завтра автоматически. Также на выходных приложение показывает тебе расписание на понедельник")
+                                .setAnimationInterpolator(FastOutSlowInInterpolator())
+                                .setPromptStateChangeListener { prompt, state ->
+                                    if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED || state == MaterialTapTargetPrompt.STATE_DISMISSING) {
+                                        mFabPrompt = MaterialTapTargetPrompt.Builder(this)
+                                                .setTarget(bottom_app_bar)
+                                                .setPrimaryText("Навигационное меню")
+                                                .setSecondaryText("Здесь можно настроить приложение, посмотреть расписание на нужную дату, а также поделиться им")
+                                                .setAnimationInterpolator(FastOutSlowInInterpolator())
+                                                .setPromptStateChangeListener { prompt, state ->
+                                                    if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED || state == MaterialTapTargetPrompt.STATE_DISMISSING) {
+                                                        Settings.first_join = "long time ago"
+
+                                                    }
+                                                }
+                                                .create()
+                                        mFabPrompt!!.show()
+
+                                    }
+                                }
+                                .create()
+                        mFabPrompt!!.show()
+
+                    }
+                }
+                .create()
+        mFabPrompt!!.show()
+    }
+
 
     private fun getData() {
         //get current data
@@ -155,6 +264,8 @@ class MainActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val current = LocalDateTime.now()
             val formatter = DateTimeFormatter.ofPattern("d-L-yyyy")
+            val hour_formatter = DateTimeFormatter.ofPattern("H")
+            hour = current.format(hour_formatter)
             answer = current.format(formatter)
 
             schedule_url = ("http://energocollege.ru/vec_assistant/%D0%A0%D0%B0%D1%81%D0%BF%D0%B8%D1%81%D0%B0%D0%BD%D0%B8%D0%B5/".plus(answer.plus(".jpg")))
@@ -162,8 +273,9 @@ class MainActivity : AppCompatActivity() {
         } else {
             var date = Date()
             val formatter = SimpleDateFormat("d-L-yyyy")
+            val hour_formatter = SimpleDateFormat("H")
             answer = formatter.format(date)
-
+            hour = hour_formatter.format(date)
             schedule_url = ("http://energocollege.ru/vec_assistant/%D0%A0%D0%B0%D1%81%D0%BF%D0%B8%D1%81%D0%B0%D0%BD%D0%B8%D0%B5/".plus(answer.plus(".jpg")))
             web1.loadUrl(schedule_url)
 
@@ -183,34 +295,31 @@ class MainActivity : AppCompatActivity() {
 
 
 
-            if (today_str == "суббота") {
-                tomorrow = current.plusDays(2)
-            } else {
-                if (today_str == "пятница") {
-                    tomorrow = current.plusDays(3)
-                } else {
-                    tomorrow = current.plusDays(1)
-                }
+
+
+            when (today_str) {
+                "суббота" -> tomorrow = current.plusDays(2)
+                "пятница" -> tomorrow = current.plusDays(3)
+                else -> tomorrow = current.plusDays(1)
             }
+
             answer_tomorrow_check = tomorrow.format(formatter)
             answer_tomorrow = tomorrow.format(formatter)
             schedule_url_tomorrow = ("http://energocollege.ru/vec_assistant/%D0%A0%D0%B0%D1%81%D0%BF%D0%B8%D1%81%D0%B0%D0%BD%D0%B8%D0%B5/".plus(answer_tomorrow.plus(".jpg")))
 
         } else {
-            var date = Date()
-            today_str = SimpleDateFormat("EEEE").format(date)
-            day = SimpleDateFormat("d").format(date)
-            month = SimpleDateFormat("L").format(date)
-            year = SimpleDateFormat("yyyy").format(date)
+            var date_t = Date()
+            today_str = SimpleDateFormat("EEEE").format(date_t)
+            day = SimpleDateFormat("d").format(date_t)
+            month = SimpleDateFormat("L").format(date_t)
+            year = SimpleDateFormat("yyyy").format(date_t)
 
-            if (today_str == "суббота") {
-                day = (day.toInt() + 2).toString()
-            } else {
-                if (today_str == "пятница") {
-                    day = (day.toInt() + 3).toString()
-                } else {
-                    day = (day.toInt() + 1).toString()
-                }
+
+
+            when (today_str) {
+                "суббота" -> day = (day.toInt() + 2).toString()
+                "пятница" -> day = (day.toInt() + 3).toString()
+                else -> day = (day.toInt() + 1).toString()
             }
             day.toString()
 
@@ -220,6 +329,55 @@ class MainActivity : AppCompatActivity() {
 
 
         }
+
+
+        if (hour.toInt() > 16) {
+            web1.loadUrl(schedule_url_tomorrow)
+            fab.setImageResource(ic_arrow_left_white)
+            fab_status = 1
+
+        } else {
+            when (today_str) {
+                "суббота" -> {
+                    fab.setImageResource(ic_arrow_left_white)
+                    fab_status = 1
+                    web1.loadUrl(schedule_url_tomorrow)
+                }
+                "воскрсенье" -> {
+                    fab.setImageResource(ic_arrow_left_white)
+                    fab_status = 1
+                    web1.loadUrl(schedule_url_tomorrow)
+            }
+            }
+        }
+
+
+    }
+
+
+    private fun displayMaterialSnackBar(text : String, length : Int) {
+        val marginSide = 10
+        val marginBottom = 150
+        val snackbar = Snackbar.make(
+                web1,
+                text,
+                length
+        )
+        val snackbarView = snackbar.view
+        val params = snackbarView.layoutParams as CoordinatorLayout.LayoutParams
+
+        params.setMargins(
+                params.leftMargin + marginSide,
+                params.topMargin,
+                params.rightMargin + marginSide,
+                params.bottomMargin + marginBottom
+
+        )
+
+
+
+        snackbarView.layoutParams = params
+        snackbar.show()
     }
 
     fun onFabRedAnimation() {
@@ -247,17 +405,38 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
         getData()
         //DON'T FORGET ABOUT CANCEL SCHEDULE NOTIFICATION
-        if (Settings.check_off == "true") {
-            stopService(intent)
-        }
+        stopService(intent)
+
     }
+
+
 
     override fun onStop() {
         super.onStop()
+
         //start background check
         if (Settings.check_off == "true") {
-            intent = Intent(this, CheckService::class.java)
-            startService(intent)
+
+            makeLongNotification("Проверка расписания", "Нажмите, чтобы открыть приложение", 1, true)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(intent)
+            }
+            val timer = Timer()
+
+            val task = object : TimerTask() {
+                override fun run() {
+                    runOnUiThread {
+                        getData()
+                        web_check.loadUrl(schedule_url_tomorrow)
+
+
+                    }
+                    }
+            }
+            timer.schedule(task, 0, 60000)
+
+            /*intent = Intent(this, CheckService::class.java)
+            startService(intent)*/
         } else {
             notificationManager.cancelAll()
         }
@@ -267,6 +446,11 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        makeLongNotification("Что-то не так", "Приложение перестало проверять расписание", 1, true)
+    }
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -274,7 +458,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         Kotpref.init(this)
 
-
+        if (Settings.first_join == ""){
+            applicationTutorial()
+        }
 
 
         //default WebView for content
@@ -352,12 +538,41 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+        //WebView for background check
+        web_check?.webViewClient = object : WebViewClient() {
+            override fun onPageFinished(view: WebView, url: String) {
+                super.onPageFinished(view, url)
+
+                if (web_check.title!!.contains((answer))) {
+                    //nothing to do. Just founded schedule for today
+                } else {
+                    if (web_check.title!!.contains(answer_tomorrow_check)) {
+                        if (Settings.last_checked_day != answer_tomorrow_check) {
+                            Settings.last_checked_day = answer_tomorrow_check
+                            makeShortNotification("Найдено расписание", "Нажмите, чтобы открыть приложение", 1, false)
+                            stopService(intent)
+
+                        }
+                    } else {
+                        if (web_check.title!!.contains(schedule_url_data)) {
+                            //nothing to do. Just founded schedule by calendar data
+                        } else {
+                            // "Расписание не найдено"
+                        }
+                    }
+                }
+            }
+
+
+        }
+
+
 
 
 
 
             setSupportActionBar(bottom_app_bar)
-            var fab_status = 0
+
             val webSettings = web1.settings
         webSettings.javaScriptEnabled = true
         webSettings.useWideViewPort = true
@@ -393,7 +608,6 @@ class MainActivity : AppCompatActivity() {
                     textView.text = "Загрузка..."
                     web1.loadUrl(schedule_url_tomorrow)
 
-
                 } else {
                     fab.setImageResource(ic_arrow_right_white)
                     textView.text = "Загрузка..."
@@ -406,6 +620,8 @@ class MainActivity : AppCompatActivity() {
 
 
         }
+
+
 
 
 
@@ -542,9 +758,8 @@ class DownloadAndSaveImageTask(context: Context) : AsyncTask<String, Unit, Unit>
     }
 }
 
-
+/*
 class CheckService : Service() {
-
     var schedule_url_tomorrow = "https://"
     var answer = "https://"
     var answer_tomorrow = "https://"
@@ -554,25 +769,35 @@ class CheckService : Service() {
     var year = "2000"
     var today_str = ""
     var schedule_url_data = "01.01.2000"
+
+
     private val TAG = "CheckService"
 
 
-    private val web_off_check: WebView? = null
+        //HERE
 
-
-
-
-
-
-
+    private val web_check by lazy {
+         webView()
+     }
 
 
 
 
     override fun onCreate() {
+
         Log.i(TAG, "Service onCreate")
         makeLongNotification("Проверка расписания", "Нажмите, чтобы открыть приложение", 1, true)
+        web_check.loadUrl("https://google.com")
+        val timer = Timer()
 
+        val task = object : TimerTask() {
+            override fun run() {
+                getData()
+                web_check.loadUrl(schedule_url_tomorrow)
+                makeShortNotification("onCreate", "Short", 2, false)
+            }
+        }
+        timer.schedule(task, 0, 60000)
 
 
     }
@@ -581,26 +806,26 @@ class CheckService : Service() {
 
         Log.i(TAG, "Service onStartCommand $startId")
 
+
+
+
         //WebView for background check
-
-        web_off_check?.webViewClient = object : WebViewClient() {
-
-
+        web_check?.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView, url: String) {
                 super.onPageFinished(view, url)
-                makeShortNotification("onPageFinished", "start action", 11, false)
-
-                if (web_off_check?.title!!.contains((answer))) {
+                makeLongNotification("onPageFinished", "longNotify", 4, false)
+                makeShortNotification("onPageFinished", "ShortNotify", 3, false)
+                if (web_check?.title!!.contains((answer))) {
                     //nothing to do. Just founded schedule for today
                 } else {
-                    if (web_off_check?.title!!.contains(answer_tomorrow_check)) {
-
-                        makeShortNotification("Найдено расписание", "Нажмите, чтобы открыть приложение", 1, false)
-                        makeShortNotification(MainActivity.Settings.last_checked_day, answer_tomorrow_check, 10, false)
-                        MainActivity.Settings.last_checked_day = answer_tomorrow_check
-
+                    if (web_check?.title!!.contains(answer_tomorrow_check)) {
+                        if (MainActivity.Settings.last_checked_day !== answer_tomorrow_check) {
+                            makeShortNotification("Найдено расписание", "Нажмите, чтобы открыть приложение", 1, false)
+                            stopService(intent)
+                            MainActivity.Settings.last_checked_day = answer_tomorrow_check
+                        }
                     } else {
-                        if (web_off_check?.title!!.contains(schedule_url_data)) {
+                        if (web_check?.title!!.contains(schedule_url_data)) {
                             //nothing to do. Just founded schedule by calendar data
                         } else {
                             // "Расписание не найдено"
@@ -610,24 +835,7 @@ class CheckService : Service() {
             }
 
 
-
-
         }
-
-        val timer = Timer()
-
-        val task = object : TimerTask() {
-            override fun run() {
-                getData()
-                web_off_check?.loadUrl(schedule_url_tomorrow)
-
-
-            }
-        }
-        timer.schedule(task, 0, 60000)
-
-
-
 
 
         return START_STICKY
@@ -809,3 +1017,4 @@ class CheckService : Service() {
         }
     }
 }
+*/

@@ -44,6 +44,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "952624281069-rt6cpo1vh4nshr7s3rq65uo5c2bi63tr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "tem.apps.vec_schedule",
+            "certificate_hash": "68724b8569b0b066fb384bf4781b94faa991752c"
+          }
+        },
+        {
           "client_id": "952624281069-e3d72au28akqf7o2hdc28klt247cna2k.apps.googleusercontent.com",
           "client_type": 3
         }
