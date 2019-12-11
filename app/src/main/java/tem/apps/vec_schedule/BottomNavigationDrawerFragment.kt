@@ -1,4 +1,4 @@
-package com.example.vec_schedule
+package tem.apps.vec_schedule
 
 import android.app.Dialog
 import android.os.Bundle
@@ -9,6 +9,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.internal.NavigationMenuView
 import com.google.android.material.navigation.NavigationView
 import android.widget.FrameLayout
+import tem.apps.vec_schedule.R
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 

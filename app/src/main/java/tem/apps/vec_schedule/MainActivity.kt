@@ -1,12 +1,10 @@
-package com.example.vec_schedule
+package tem.apps.vec_schedule
 
 import android.Manifest
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
-import android.annotation.TargetApi
 import android.app.*
 import android.content.*
-import android.content.ClipData.newPlainText
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
@@ -18,31 +16,26 @@ import android.view.*
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.DatePicker
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.setMargins
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target.SIZE_ORIGINAL
 import com.chibatching.kotpref.Kotpref
 import com.chibatching.kotpref.KotprefModel
-import com.example.vec_schedule.R.drawable.*
-import com.example.vec_schedule.R.menu.bottomappbar_menu_primary
-import com.example.vec_schedule.R.menu.bottomappbar_menu_secondary
-import com.google.android.gms.internal.measurement.zzz
+import tem.apps.vec_schedule.R
+import tem.apps.vec_schedule.R.drawable.*
+import tem.apps.vec_schedule.R.menu.bottomappbar_menu_primary
+import tem.apps.vec_schedule.R.menu.bottomappbar_menu_secondary
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.textView
-import kotlinx.android.synthetic.main.content_main.*
-import kotlinx.android.synthetic.main.fragment_bottom_navigation_drawer.*
 import org.jetbrains.anko.*
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt
 import java.io.File
@@ -448,7 +441,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        if (Settings.check_off == "true") {
         makeLongNotification("Что-то не так", "Приложение перестало проверять расписание", 1, true)
+        }
     }
 
 
