@@ -3,8 +3,12 @@ package tem.apps.vec_schedule
 import android.Manifest
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
-import android.app.*
-import android.content.*
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
@@ -12,7 +16,9 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.*
 import android.util.Log
-import android.view.*
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.DatePicker
@@ -27,16 +33,12 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target.SIZE_ORIGINAL
 import com.chibatching.kotpref.Kotpref
 import com.chibatching.kotpref.KotprefModel
-import tem.apps.vec_schedule.R
-import tem.apps.vec_schedule.R.drawable.*
-import tem.apps.vec_schedule.R.menu.bottomappbar_menu_primary
-import tem.apps.vec_schedule.R.menu.bottomappbar_menu_secondary
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_main.textView
 import org.jetbrains.anko.*
+import tem.apps.vec_schedule.R.drawable.*
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt
 import java.io.File
 import java.io.FileOutputStream
@@ -45,7 +47,6 @@ import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
-
 
 
 class MainActivity : AppCompatActivity() {
@@ -582,10 +583,7 @@ class MainActivity : AppCompatActivity() {
                 override fun onHidden(fab: FloatingActionButton?) {
                     super.onHidden(fab)
                     bottom_app_bar.toggleFabAlignment()
-                    bottom_app_bar.replaceMenu(
-                            if (currentFabAlignmentMode == BottomAppBar.FAB_ALIGNMENT_MODE_CENTER) bottomappbar_menu_secondary
-                            else bottomappbar_menu_primary
-                    )
+
                     fab?.setImageDrawable(
                             if (currentFabAlignmentMode == BottomAppBar.FAB_ALIGNMENT_MODE_CENTER) getDrawable(ic_arrow_left_white)
                             else getDrawable(ic_arrow_right_white)
